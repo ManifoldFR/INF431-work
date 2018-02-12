@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{polyglossia}
+\usepackage{xcolor}
+\setdefaultlanguage{french}
+\usepackage{listings}
+\usepackage{ntheorem}
+
+\title{INF431: \textit{Devoir Maison 1}}
+\author{Wilson \textsc{Jallet}}
+
+\theoremstyle{break}
+\theorembodyfont{}
+\newtheorem{ques}{Question}
+
+\setmonofont{Source Code Pro}
+
+\lstset{%
+	framextopmargin=50pt,
+	frame=bottomline,
+	xleftmargin=10pt,
+	keywordstyle=\color{orange},
+	showstringspaces=false,
+	tabsize=4,
+	basicstyle=\ttfamily\small
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{ques}
+L'algorithme brutal parallèle consisterait en:\begin{itemize}
+\item lancer un \textit{thread} pour chaque position de début $i$ envisagée, soit $|Y|-|X|+1$ \textit{threads}
+\item pour chaque thread, comparer $Y_{i:i+|X|-1}$ à $X$, ce qui se fait en temps $O(|X|)$
+\end{itemize}
+
+Le pseudo-code est comme suit:
+\begin{lstlisting}
+boolean[] result;
+
+for i=0 to len(Y)-len(X)+1:
+	Processor i does {
+		result[i] = X.isSubstringAt(Y,i)
+	}
+
+return result;
+\end{lstlisting}
+
+Le temps d'exécution est $O(|X|)$, le nombre d'opérations est $O\left(|X|(|Y|-|X|)\right)$ et l'efficacité sur $p$ processeurs est
+\[
+e_p = O\left(\frac{|X|+|Y|}{p|X|}\right).
+\]
+
+
+\end{ques}
+
+\begin{ques}
+\textbf{CREW:} Comme on écrit dans un tableau dans l'algorithme précédent, il n'y a jamais d'écritures concurrentes dans la même case mémoire. L'algorithme reste identique, avec un temps d'exécution $O(|X|)$.
+
+\noindent\textbf{EREW:} Il y a plusieurs lectures concurrentes des entrées de la chaîne $X$. On peut paralléliser en faisant en sorte que chaque \textit{thread} effectue sa propre copie de $X$, ce qui se fait en temps total $O\left(\log|X|(|Y|-|X|)\right)$. Ensuite, chaque \textit{thread} $i$ fait les $O(|X|)$ comparaisons nécessaires pour savoir si $i$ est une occurrence de $X$ dans $Y$. Le temps d'exécution est $O\left(|X|(|Y|-|X|)\right)$.
+
+\end{ques}
+
+
+\begin{ques}
+La JVM est proche d'une PRAM CREW, donc on peut programmer l'algorithme CRCW/CREW précédent.
+
+On peut créer une classe \lstinline|Task| étendant l'interface \lstinline|Runnable| correspondant à la comparaison à partir de la position $i$ sur la chaîne $Y$, contenant un champ \lstinline[language=Java]|int i|. Ensuite, on crée les \textit{threads} nécessaires via \lstinline[language=Java]|new Thread(new Task())| et on les démarre via la méthode \lstinline|start|, suivi des opérations de synchronisation avec \lstinline|join|. Chaque \textit{thread} écrit sur sa propre case du tableau des résultats, il n'y a pas de mécanisme de verrou supplémentaire à considérer.
+\end{ques}
+
+
+\begin{ques}
+On crée une variable \lstinline|res| qui sera le résultat, et on lance un \textit{thread} par entrée du tableau $A$ : le \textit{thread} $i$ calculera \lstinline|res = min(res, i)|. Cela garantit un temps d'exécution $O(1)$.
+\end{ques}
+
+\begin{ques}
+On lance un \textit{thread} pour chaque $i\in [\![2,\pi(X)]\!]$, et on lance sur chacun d'eux l'algorithme précédent en temps constant sur le tableau $A = \left(X_k \neq X_{i+k-1} \right)_{k}$.
+\end{ques}
+
+\begin{ques}
+
+\end{ques}
+
+\end{document}

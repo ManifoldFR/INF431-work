@@ -1,5 +1,5 @@
 public class Stack<E> {
-    private class Node{
+    class Node{
         E data;
         Node next;
 
@@ -9,10 +9,14 @@ public class Stack<E> {
         }
     }
 
-    Node top;
+    private Node top;
 
     public Stack(E el) {
         top = new Node(el,null);
+    }
+
+    public Stack() {
+        top = null;
     }
 
     public E pop() {
@@ -26,12 +30,24 @@ public class Stack<E> {
         top = n;
     }
 
+    /**
+     * À ne pas utiliser avec 500000 entrées dans la stack
+     * Cette méthode détruit la stack !!
+     **/
     public String toString() {
-        Node n;
         String res = "";
         while (top != null) {
-            res = res + pop() + "; ";
+            String val = this.pop().toString();
+            res = res + val + "; ";
         }
+        System.out.println("string done...");
         return res;
+    }
+
+    public void print() {
+        while (top != null) {
+            System.out.println(pop() + "; ");
+        }
+        System.out.println("Printing done.");
     }
 }

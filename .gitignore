@@ -2,3 +2,6 @@
 out
 td1/titles.txt
 *.iml
+*.fdb_latexmk
+*.xdv
+dm1/*.log
