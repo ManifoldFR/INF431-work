@@ -5,3 +5,7 @@ td1/titles.txt
 *.fdb_latexmk
 *.xdv
 dm1/*.log
+*.fls
+*.synctex.gz
+*.aux
+*.thm
