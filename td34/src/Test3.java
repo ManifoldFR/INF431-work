@@ -13,10 +13,10 @@ public class Test3 {
     public static MessageQueue getQueue() {
         // CHANGE AS YOU SOLVE THE EXERCISES
         // return new data.BuiltinQueue(); // COMMENT THIS OUT FIRST
-        return new data.ListQueue(); // EX 2
+        // return new data.ListQueue(); // EX 2
         // return new data.LockedListQueue(); // EX 2
         // return new data.BoundedQueue(5); // EX 3
-        // return new data.LockedBoundedQueue(5); // EX 3
+        return new data.LockedBoundedQueue(5); // EX 3
         // return new data.AtomicListQueue(); // EX 4
     }
 
