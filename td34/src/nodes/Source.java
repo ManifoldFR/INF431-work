@@ -3,6 +3,7 @@ package nodes;
 import java.awt.Image;
 
 import util.ImageBuffer;
+import util.PixelBuffer;
 import data.Message;
 
 /**
@@ -13,10 +14,9 @@ import data.Message;
 public abstract class Source extends Node {
 
     protected final Image image;
-    public final int width, height;
     private final boolean loopAgain;
-    protected int[] buffer;
-
+    protected PixelBuffer buffer;
+    public final int width, height;
     public final String channel;
 
     public Source(String fileName, String chan, boolean loop) {
@@ -24,6 +24,8 @@ public abstract class Source extends Node {
         this.image = ImageBuffer.getImage(fileName);
         this.width = image.getWidth(null);
         this.height = image.getHeight(null);
+        this.buffer = new PixelBuffer(new int[this.width * this.height], this.width,
+                                 this.height);
         this.channel = chan;
         this.loopAgain = loop;
     }
@@ -44,7 +46,7 @@ public abstract class Source extends Node {
     public void run() {
         ImageBuffer imb = ImageBuffer.extract(this.image, getName());
         if (imb == null) return;
-        this.buffer = imb.getPixels();
+        this.buffer = new PixelBuffer(imb.getPixels(), imb.width, imb.height);
         do {
             this.sendData();
         } while (this.loopAgain);

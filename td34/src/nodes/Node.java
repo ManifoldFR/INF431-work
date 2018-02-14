@@ -50,10 +50,7 @@ public abstract class Node implements Runnable {
      * This method begins the execution of the node.
      */
     public void init() {
-        // change this for exercise 1
-        Thread thisThread = new Thread(this);
-        thisThread.start();
-        
+        new Thread(this).start();
     }
 
     /**

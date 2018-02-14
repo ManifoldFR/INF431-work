@@ -15,6 +15,9 @@ import javax.swing.WindowConstants;
 import util.ImageBuffer;
 import data.LineMessage;
 import data.Message;
+import data.PixelMessage;
+import data.PixelReferenceMessage;
+import data.TileMessage;
 
 public final class Display extends Node {
 
@@ -37,7 +40,7 @@ public final class Display extends Node {
         width = w;
         height = h;
         pixels = new int[width * height];
-        for (int i = 0; i < pixels.length; i ++)
+        for (int i = 0; i < pixels.length; i++)
             pixels[i] = Color.magenta.getRGB();
         buffer = new ImageBuffer(width, height, pixels, title);
         image = buffer.createImage();
@@ -61,6 +64,12 @@ public final class Display extends Node {
     public void putInQueue(Message msg) {
         if (msg instanceof LineMessage)
             this.handleLine((LineMessage) msg);
+        else if (msg instanceof PixelMessage)
+            this.handlePixel((PixelMessage) msg);
+        else if (msg instanceof PixelReferenceMessage)
+            this.handlePixel((PixelReferenceMessage) msg);
+        else if (msg instanceof TileMessage)
+            this.handleTile((TileMessage) msg);
         else {
             String errMsg = String.format("Cannot handle %s messages",
                                           msg.getClass().toString());
@@ -69,11 +78,19 @@ public final class Display extends Node {
     }
 
     private void handleLine(LineMessage lineMsg) {
-        int num = lineMsg.lineNum;
-        if (num < 0 || num > height - 1) return;
-        int offset = num * width;
-        lineMsg.getContent(pixels, offset);
-        buffer.setPixels(pixels);
+        buffer.setLine(lineMsg.y, lineMsg.pixels);
+    }
+
+    private void handlePixel(PixelMessage msg) {
+        buffer.setPixel(msg.x, msg.y, msg.pixel);
+    }
+
+    private void handlePixel(PixelReferenceMessage msg) {
+        buffer.setPixel(msg.x, msg.y, msg.getPixel());
+    }
+
+    private void handleTile(TileMessage msg) {
+        buffer.setTile(msg.x, msg.y, msg.w, msg.h, msg.buf.pixels);
     }
 
     @Override
@@ -86,9 +103,9 @@ public final class Display extends Node {
         // The graphical UI thread runs this as needed
         return;
     }
-    
+
     @Override
-    public void init(){
+    public void init() {
         // This runs in the context of the graphical UI thread
         return;
     }

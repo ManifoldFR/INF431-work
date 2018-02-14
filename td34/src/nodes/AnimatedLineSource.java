@@ -4,6 +4,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.ImageConsumer;
 import java.util.Hashtable;
 
+import util.PixelBuffer;
+
 public class AnimatedLineSource extends LineSource implements ImageConsumer {
 
     public AnimatedLineSource(String fileName, String channel) {
@@ -12,7 +14,8 @@ public class AnimatedLineSource extends LineSource implements ImageConsumer {
 
     @Override
     public void run() {
-        buffer = new int[width * height];
+        buffer = new PixelBuffer(new int[buffer.width * buffer.height],
+                            buffer.width, buffer.height);
         image.getSource().startProduction(this);
     }
 
@@ -38,14 +41,14 @@ public class AnimatedLineSource extends LineSource implements ImageConsumer {
     public void setPixels(int x, int y, int w, int h, ColorModel model,
                           byte[] pixels, int off, int scanSize) {
         for (int i = 0; i < pixels.length; i++) {
-            buffer[x + y * w + i] = model.getRGB(pixels[i]);
+            buffer.pixels[x + y * w + i] = model.getRGB(pixels[i]);
         }
     }
 
     public void setPixels(int x, int y, int w, int h, ColorModel model,
                           int[] pixels, int off, int scanSize) {
         for (int i = 0; i < pixels.length; i++)
-            buffer[x + y * w + i] = model.getRGB(pixels[i]);
+            buffer.pixels[x + y * w + i] = model.getRGB(pixels[i]);
     }
 
 }

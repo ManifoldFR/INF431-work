@@ -10,13 +10,12 @@ public class LineSource extends Source {
 
     @Override
     public void sendData() {
-        int[] line = new int[width];
+        int[] line = new int[buffer.width];
         int k = 0;
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j, ++k)
-                line[j] = buffer[k];
-            // System.out.format("LineSource: sent %s.%d\n", this.channel, i);
-            this.forward(new LineMessage(this.channel, i, line));
+        for (int i = 0; i < buffer.height; ++i) {
+            for (int j = 0; j < buffer.width; ++j, ++k)
+                line[j] = buffer.pixels[k];
+            this.forward(new LineMessage(this.channel, i, line.clone()));
         }
     }
 
