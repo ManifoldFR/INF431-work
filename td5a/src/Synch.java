@@ -1,6 +1,6 @@
 public class Synch extends Thread {
   int val;
-  boolean condition = true;
+  volatile boolean condition = true;
  
    public void run() {
      if (condition)

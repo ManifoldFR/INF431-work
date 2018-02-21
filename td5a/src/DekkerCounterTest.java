@@ -11,7 +11,7 @@ class DekkerCounterTest {
  
     static UnsafeCounter c = new UnsafeCounter ();
  
-    //static Dekker m = new Dekker();
+    static Dekker m = new Dekker();
  
     public static void main (String[] args) throws InterruptedException {
       System.out.println("Dekker Counter Demo");
@@ -25,9 +25,9 @@ class DekkerCounterTest {
             System.out.println("Running: "+tid);
             // ...each thread increments the counter STEP times
             for (int s = 0; s < STEPS; s++) {
-              // m.Pmutex(tid);
+              m.Pmutex(tid);
               c.increment();
-              // m.Vmutex(tid);
+              m.Vmutex(tid);
             }
           }
         });
