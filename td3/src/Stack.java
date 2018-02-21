@@ -1,5 +1,3 @@
-package td3a;
-
 public class Stack<E> {
     class Node{
         E data;

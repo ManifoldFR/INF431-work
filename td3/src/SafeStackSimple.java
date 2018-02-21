@@ -1,5 +1,3 @@
-package td3a;
-
 public class SafeStackSimple<E> extends Stack<E> {
 
     private Node top;

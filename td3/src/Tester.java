@@ -1,5 +1,3 @@
-package td3a;
-
 public class Tester implements Runnable {
     private int Ninserts;
     private Stack<Integer> stack;

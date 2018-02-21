@@ -1,14 +1,20 @@
 package data;
 
-import nodes.Node;
-
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BlockingBoundedQueue implements MessageQueue {
 
     private final Message[] queue;
     private final int bound;
     private int in, size;
+
+    // This queue's protecting lock...
+    private final Lock lock = new ReentrantLock();
+    // and its two condition variables to help it wait to become nonempty/nonfull
+    private final Condition empty = lock.newCondition();
+    private final Condition full = lock.newCondition();
 
     public BlockingBoundedQueue(int max) {
         this.queue = new Message[max];
@@ -23,11 +29,18 @@ public class BlockingBoundedQueue implements MessageQueue {
 
     @Override
     public boolean add(Message msg) {
-        if (this.isFull()) return false;
-        this.queue[this.in] = msg;
-        this.in = (this.in + 1) % this.bound;
-        ++this.size;
-        return true;
+        lock.lock();
+        while (this.isFull()) {
+            full.awaitUninterruptibly();
+        }
+        try {
+            this.queue[this.in] = msg;
+            this.in = (this.in + 1) % this.bound;
+            ++this.size;
+            return true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -37,15 +50,17 @@ public class BlockingBoundedQueue implements MessageQueue {
 
     @Override
     public Message remove() {
-        while (true) {
-            if (!this.isEmpty()) break;
-            Node.sleepUninterruptibly(10);
+        lock.lock();
+        while (this.isEmpty()) {
+            empty.awaitUninterruptibly();
         }
-        int out = (this.in + this.bound - this.size) % this.bound;
-        Message thing = this.queue[out];
-        this.queue[out] = null;
-        --this.size;
-        return thing;
+        try {
+            int out = (this.in + this.bound - this.size) % this.bound;
+            Message thing = this.queue[out];
+            this.queue[out] = null;
+            --this.size;
+            return thing;
+        } finally { lock.unlock(); }
     }
 
 }

@@ -32,9 +32,9 @@ public class Test4 {
     public static void main(String[] args) {
         toStart.clear();
         // BEGIN modifiable bits
-        setupSplit(); // EX 1 (alternative 1)
+        // setupSplit(); // EX 1 (alternative 1)
         // setupDistort(); // EX 1 (alternative 2)
-        // setupMultiDistort1(); // EX 1 (alternative 3)
+        setupMultiDistort1(); // EX 1 (alternative 3)
         // setupMultiDistortN(10); // EX 2
         // setupMultiDistortPool(10); // EX 3
         // setupDistortFrame(); // EX 4
