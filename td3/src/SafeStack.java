@@ -1,3 +1,5 @@
+package td3a;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SafeStack<E> extends Stack<E> {

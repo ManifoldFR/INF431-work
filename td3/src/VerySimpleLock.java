@@ -1,3 +1,5 @@
+package td3a;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VerySimpleLock {
