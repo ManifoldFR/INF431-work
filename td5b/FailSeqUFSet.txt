@@ -1,0 +1,37 @@
+# An example of bad interleaving that makes SeqUFSet misbehave
+
+On my four-cour Intel i5 laptop, the Test.java class creates six concurrent threads, all accessing the same UFSet u.
+
+Depending on the value of n%4, each instance of Unionizer performs one task or the other : threads 0 and 4 do the same thing, as do threads 1 and 5.
+
+For things to go wrong, we only need to have thread 1 perform the union(9,19) operation in the 0-th loop just as thread 1 is doing union(9,19) too.
+
+We get :
+5:  x = 9 // result of find(9)
+5:  y = 19  // result of find(19)
+5 does link(9,19) & 1 does find(9) {
+    1:   (local x in method) x = 9
+    1:   start = x = 9
+    1 tests that x = parent[x], passes first while loop
+    5:   parent[9] = 19
+    1 tests parent[x] != x, enters while loop
+    1:   y = 19 // parent[start] is parent[9] is 19 here
+    1:   parent[start] = 9
+    1:   start = 19 // y = 19 here
+    1 tests parent[start] != x, stays in loop // parent[19] is 19
+    1:  y = 19 // parent[start] is parent[19] is 19
+    1:  parent[19] = 9 // oops.
+    1:  start = y = 19
+    1 tests parent[start] = 9, exits loop // parent[19] just changed to 9
+}
+1:  method find(9) returns 9 // value of local x in find(9) never changed
+1:  x = 9 // wrong answer, thread 5 made 19 the parent of 9 during runtime of method find !
+1:  y = find(19) = 9 // oh no
+1:  link(9,9) -> parent[9] is 9 now
+
+
+So, to sum up:
+the parent of 9 is 9
+the parent of 19 is 9
+
+It's completely backwards !

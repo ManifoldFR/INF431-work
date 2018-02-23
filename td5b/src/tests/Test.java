@@ -18,7 +18,7 @@ public class Test {
 		
 		for(int j=0;j<Ntests;j++) {
 			// replace by the appropriate UFSet implementation
-			UFSet u = new SeqUFSet(size);
+			UFSet u = new LockfreeUFSet(size);
 			
 			System.out.println("Starting test "+(j+1)+": ");
 			long time = System.nanoTime();

@@ -1,0 +1,10 @@
+# An example of bad interleaving and LockfreeUFSet misbehaving
+
+We consider threads 1 and 5 on an Intel 4-core laptop, as they perform union(9,19) concurrently
+
+5: x = 9 // find(9) is 9
+5: y = 19
+Thread 5 performs link(9,19) while thread 1 does find(9) {
+    1: local variable x = 9
+    1: enters while loop
+}
