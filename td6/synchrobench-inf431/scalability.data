@@ -1,0 +1,6 @@
+# thread coarse lock-coupling optimistic lazy versioned lock-free
+   1     255191.8      0             0          0    0         0
+   2     227076.8      0             0          0    0         0
+   4     225032.39      0             0          0    0         0
+   8     225694.58      0             0          0    0         0
+  16     227632.64      0             0          0    0         0
